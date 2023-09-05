@@ -3,6 +3,8 @@ const app = express.Router();
 const User = require('./schema')
 const { v4: uuidv4 } = require('uuid');
 const findmefunction = require('../auth/findmefunction')
+const MyFiles = require('../file/schema')
+const mongoose = require('mongoose');
 
 const checkUser = (allBody) =>{
     const result = allBody.allUsers.find(object => String(object.email) === String(allBody.loginData.email))
@@ -87,10 +89,16 @@ app.put('/checkUser',async(req,res)=>{
 app.get('/:currentUserId/getMyAcc',async(req,res)=>{
     const {currentUserId} = req.params
     try{
+        const allBody = {
+            currentUserId
+        }
         const myacc = await User.findOne({fireBaseId : currentUserId})
         if(myacc){
            // const myaccfunction = findmefunction()
-            res.status(200).json({myacc})
+            Object.assign(allBody,{
+                myacc:myacc,
+            })
+            res.status(200).json({myacc:myacc,allBody:allBody})
         }else{
             res.status(200).json({myacc:{},message:'Cant Found Acc'})
         }
@@ -98,5 +106,22 @@ app.get('/:currentUserId/getMyAcc',async(req,res)=>{
         res.status(500).json({message:'Internal Server Error'})
     }
 })
+
+app.put('/:currentUserId/pushWelcomeMessage',async(req,res) => {
+    const {currentUserId} = req.params
+    try{
+        const myfiles = await MyFiles.findOneAndUpdate(
+            {userId : currentUserId},
+            {$push : {welcomeMessage : {message:`${new Date().toLocaleString()} Welcome !`}}},
+            {new:true,upsert:true}
+        )
+        res.status(200).json({myfiles})
+    }catch(err){
+        res.status(500).json({message:'Internal Server Error'})
+    }
+})
+
+
+
 
 module.exports = app

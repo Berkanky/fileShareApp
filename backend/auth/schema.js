@@ -76,6 +76,10 @@ const UserSchema = new mongoose.Schema({
         type:Number,
         required:false,
         default:15
+    },
+    loginType:{
+        type:String,
+        required:false
     }
   });
 

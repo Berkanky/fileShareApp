@@ -50,6 +50,7 @@
         <div class="q-gutter-sm row items-center no-wrap">
           <q-btn round dense flat color="text-grey-7" icon="apps">
             <q-tooltip>Google Apps</q-tooltip>
+            <menuOptionsVue />
           </q-btn>
           <q-btn round dense flat color="grey-8" icon="notifications" v-on:Click="openNotifies">
             <q-badge color="red" text-color="white" floating>
@@ -320,6 +321,7 @@ import { getAuth, signOut } from "firebase/auth";
 import { v4 as uuidv4 } from 'uuid';
 import uploadVue from 'src/upload/upload.vue';
 import { set } from 'firebase/database';
+import menuOptionsVue from 'src/myApps/menuOptions.vue';
 export default {
   name: 'GooglePhotosLayout',
   components:{
@@ -329,7 +331,8 @@ export default {
     indexShareds,
     userDetail,
     update,
-    KProgress
+    KProgress,
+    menuOptionsVue
   },
   setup () {
     const store = useCounterStore()

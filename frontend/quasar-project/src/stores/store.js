@@ -55,10 +55,151 @@ export const useCounterStore = defineStore('counter', {
 
     //downlaods
 
-    downloadsDialogActive:false
+    downloadsDialogActive:false,
+
+
+    //folderDetail
+    folderDetailSettingsDialogActive:false,
+    allUsersList:[],
+    permissionUsersOfferList:[],
+    currentPermissedUsers:[],
+
+
+    //menuOptions
+    createNoteDialogActive:false,
+    myNotes:[],
+    myNotesFolders:[],
+    readNotesDialogActive:false,
+    selectedNote:{},
+    selectedNoteParams:{},
+    selectedNotes:[],
+    moreOptionForSelectedNotesDialogActive:false,
+    //note update
+    noteUpdateDialogActive:false,
+
+
+    importNotesDialogActive:false,
+    extractNotesDialogActive:false,
+    globalNoteDetail:{},
+
+    //noteFolderDetail
+    noteFolderNotes:[],
+    noteFolderFolders:[]
 
   }),
   actions: {
+    filterInputNoteFolderDetail(allBody){
+      axios.put(`${this.baseUrl}/files/${allBody.id}/${allBody.noteId}/filterInput`, allBody)
+        .then(res=>{
+          console.log(res)
+          this.noteFolderNotes = res.data.notes
+          this.noteFolderFolders = res.data.folders
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    getSelectedNoteFolderDetail(id,noteId){
+      axios.get(`${this.baseUrl}/files/${id}/${noteId}/getSelectedNoteFolderDetail`)
+        .then(res=>{
+          console.log('getSelectedNoteFolderDetail',res)
+          this.noteDetail = res.data.findnotefolder
+          this.globalNoteDetail = this.noteDetail
+          this.noteFolderNotes = res.data.notesList
+          this.noteFolderFolders =  res.data.foldersList
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    welcomeMessageWhenLogin(id){
+      axios.put(`${this.baseUrl}/files/${id}/pushWelcomeMessage`)
+        .then(res=>{
+          console.log('pushWelcomeMessage',res)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    deleteSelectedNote(noteData){
+      const id = this.myAccFromDb._id
+      const noteId = noteData.noteId
+      axios.put(`${this.baseUrl}/files/${id}/${noteId}/removeSelectedNote`)
+        .then(res=>{
+          console.log(res)
+
+          this.myNotes = this.myNotes.filter(
+            object => object.noteId !== res.data.findnote.noteId
+          )
+          this.readNotesDialogActive =! this.readNotesDialogActive
+
+
+        })
+        .catch(err=>{
+          console.log(err)
+        })
+    },
+    giveStarForNote(noteData){
+      const allBody  = {
+        selectedNote:noteData
+      }
+      const id = this.myAccFromDb._id
+      const noteId = noteData.noteId
+      axios.put(`${this.baseUrl}/files/${id}/${noteId}/giveStar`, allBody)
+        .then(res=>{
+          console.log(res)
+          if(this.readNotesDialogActive){
+            this.selectedNote = res.data.selectedNote
+            console.log('this.selectedNote',this.selectedNote)
+          }
+
+        })
+        .catch(err=>{
+          console.log(err)
+        })
+
+    },
+    getSelectedNoteDetail(id,noteId){
+      console.log(id,noteId)
+      axios.get(`${this.baseUrl}/files/${id}/${noteId}/getSelectedNoteDetail`)
+        .then(res=>{
+          console.log(res)
+          this.selectedNote = res.data.findednote
+          console.log('store.selectedNote',this.selectedNote)
+        })
+        .catch(err=>{
+          console.log(err)
+        })
+    },
+    getMyNotes(id){
+      axios.get(`${this.baseUrl}/files/${id}/getMyNotes`)
+        .then(res=>{
+          console.log(res)
+          this.myNotes = res.data.notes
+          this.myNotesFolders = res.data.folders
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    getMyId(){
+      const check = this.myAccFromDb.hasOwnProperty('_id')
+      if(check){
+        return this.myAccFromDb._id
+      }
+    },
+    getAllUsers(id){
+      axios.get(`${this.baseUrl}/files/${id}/getAllUsers`)
+        .then(res=>{
+          console.log('getAllUsers',res)
+
+          this.allUsersList = res.data.allUsers
+
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
     getTotalSizeAllFiles(id){
       axios.get(`${this.baseUrl}/files/${id}/getTotalSize`)
         .then(res=>{

@@ -2,7 +2,8 @@
   <q-layout view="lHr LpR fFf">
 
     <q-header elevated class="bg-grey-1 text-dark"
-      v-if="this.$route.path !== '/home' && this.$route.path !== '/login' && this.$route.name !== 'folderDetail'">
+      v-if="this.$route.name === 'onlypage'
+        ">
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
 
@@ -10,7 +11,7 @@
           <q-avatar>
             <q-icon name="auto_stories"></q-icon>
           </q-avatar>
-          MyPhotos
+          MyPhotoss
         </q-toolbar-title>
 
         <q-btn dense flat round icon="menu" @click="toggleRightDrawer" />

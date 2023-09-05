@@ -69,6 +69,13 @@ const starCrud = require('./stars/crud')
 //totalsizecrud
 const totalsizecrud = require('./gettotalsize/crud')
 
+//permissionforfolder
+const permissionCrud = require('./givePermissionForFolder/crud')
+
+
+//mynotescrud
+const myNotesCrud = require('./myNotes/crud')
+
 app.use('/files',
   testCrud,
   userCrud,
@@ -82,7 +89,9 @@ app.use('/files',
   deleteOptionsCrud,
   updateFileCrud,
   starCrud,
-  totalsizecrud
+  totalsizecrud,
+  permissionCrud,
+  myNotesCrud
   )
 
 

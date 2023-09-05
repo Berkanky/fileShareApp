@@ -13,7 +13,10 @@ const MyFilesSchema = new mongoose.Schema({
     notifies:[],
     downloads:[],
     deleteds:[],
-    stars:[]
+    stars:[],
+    mypermisseds:[],
+    myNotes:[],
+    welcomeMessage:[]
 }) 
 
 const MyFiles = mongoose.model('MyFiles',MyFilesSchema)

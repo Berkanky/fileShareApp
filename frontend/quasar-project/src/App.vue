@@ -26,6 +26,11 @@ export default defineComponent({
     }
   },
   methods:{
+
+    checkMySchema(){
+
+    },
+
     welcomeMessage(){
       this.$q.notify({
         color:"blue-4",
@@ -70,6 +75,7 @@ export default defineComponent({
       handler(newValue,oldValue){
         if(newValue._id){
           const id = newValue._id
+          //console.log('this.$router',this.$router)
           this.store.getTotalSizeAllFiles(id)
         }
       },
@@ -82,6 +88,16 @@ export default defineComponent({
         const path  = to.fullPath
         if(from.path === '/login'){
           this.welcomeMessage()
+
+          this.$watch('store.myAccFromDb',(newVal) => {
+            const check = newVal.hasOwnProperty('_id')
+            if(check){
+              const id = newVal._id
+              console.log('newVal',newVal)
+              this.store.welcomeMessageWhenLogin(id)
+            }
+          })
+
         }
         if(this.$route.path !== '/login'){
           this.checkCurrentUserStatus()

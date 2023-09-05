@@ -4,14 +4,26 @@ const { v4: uuidv4 } = require('uuid');
 const User = require('../auth/schema')
 
 
-const getAllUsersFunction =async () => {
-    let allUsers = await User.find()
-    return allUsers.length ? allUsers : []
+const removemefromalluserslist = (allBody) => {
+    allBody.allUsers = allBody.allUsers.filter(
+        object => String(object._id) !== String(allBody.currentUserId)
+    )
+    return allBody.allUsers
 }
-app.get('/getAllUsers',async(req,res)=>{
+
+
+
+app.get('/:currentUserId/getAllUsers',async(req,res)=>{
+    const {currentUserId} = req.params
     try{
+        const allBody = {
+            currentUserId
+        }
         let allUsers = await User.find()
         if(allUsers.length > 0){
+            Object.assign(allBody,{allUsers:allUsers})
+
+            allUsers = removemefromalluserslist(allBody)
             res.status(200).json({allUsers})
         }
     }catch(err){

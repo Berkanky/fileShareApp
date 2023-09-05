@@ -90,7 +90,7 @@
     <q-page-container>
       <router-view />
       <q-card class="my-card" flat bordered>
-      <q-card-section>
+      <q-card-section class="row">
         <div class="text-h6 text-grey-6 text-weight-bold">
           <q-btn icon="keyboard_backspace" flat color="grey-7" v-on:click="goBack"></q-btn>
           {{ this.myFolder }} <q-icon name="chevron_right"></q-icon>
@@ -98,6 +98,8 @@
             this.selectedFolderDetailLocal.selectedFile ? this.selectedFolderDetailLocal.selectedFile.fileName : ''
           }}
         </div>
+        <q-space></q-space>
+        <q-btn icon="admin_panel_settings" flat color="grey-7" v-on:click="openSettings"></q-btn>
       </q-card-section>
       <q-card-section class="text-right text-subtitle2">
         <div class="q-mr-xl">
@@ -202,10 +204,14 @@
     <folderDetail
       :specialSelectedFolderDetail="this.specialSelectedFolderDetail"
       v-if="this.store.selectedfolderSpecialFolderActive"/>
+    <settings
+      v-if="this.store.folderDetailSettingsDialogActive"
+    />
   </q-layout>
 </template>
 
 <script>
+import settings from '../folderDetailComp/settings.vue'
 import axios from 'axios'
 import folderDetail from 'src/components/folderDetail.vue';
 import userDetail from 'src/components/userDetail.vue';
@@ -214,7 +220,8 @@ import { useCounterStore } from 'src/stores/store';
 export default {
   components:{
     userDetail,
-    folderDetail
+    folderDetail,
+    settings
   },
   setup(){
     const leftDrawerOpen = ref(false)
@@ -257,6 +264,9 @@ export default {
     })
   },
   methods:{
+    openSettings(){
+      this.store.folderDetailSettingsDialogActive =! this.store.folderDetailSettingsDialogActive
+    },
     selectFile(men,data){
       console.log(men,data)
       if(men.id === 3){
@@ -352,6 +362,7 @@ export default {
           console.log('store.myAccFromDb',newObject)
           console.log('routeparams',fileId)
           this.store.getSelectedSpecialFileDetail(id,fileId) //18.30 da yazdın bunu tam dışarı çıkmadan önce
+          console.log('selectedFolderDetail',this.store.selectedFolderDetail)
         }
       })
 
@@ -388,8 +399,12 @@ export default {
     'store.selectedFolderDetail':{
       handler(newValue,oldValue){
         if(newValue){
+          const check = newValue.hasOwnProperty('selectedFile')
+          if(check){
+            console.log('newValueselectedFolderDetail',newValue)
+          }
           this.selectedFolderDetailLocal = newValue
-        //console.log('selectedFolderDetailLocal',this.selectedFolderDetailLocal)
+          console.log('selectedFolderDetailLocal',this.selectedFolderDetailLocal)
         }
       }
     }
